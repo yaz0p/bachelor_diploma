@@ -6,8 +6,14 @@ from aiogram import Bot, Dispatcher
 from aiogram.types import Message, BotCommand
 from aiogram.filters import CommandStart
 from aiogram.utils.markdown import hbold, hlink
+from dotenv import load_dotenv
+from os import getenv
+from text_generator import TextGen
 
-TOKEN = "6981508379:AAHKYOzmf5jBxyeAuUM83N0xEaNgaE-CpX0"
+load_dotenv()
+
+talkbox = TextGen(getenv("CREDENTIAL"), False, getenv("SCOPE"), True)
+TOKEN = getenv("TELEGRAM_TOKEN")
 dp = Dispatcher()
 bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
 
@@ -34,6 +40,15 @@ async def bot_menu():
     ]
 
     await bot.set_my_commands(bot_command)
+
+@dp.message()
+async def chat_handler(message: Message) -> None:
+    try:
+        await message.answer(talkbox.answer(message))
+    except TypeError:
+        await message.answer(
+            "Что-то пошло не так! Сообщил разработчку о произошедшей неполадке!"
+        )
 
 
 async def main() -> None:
