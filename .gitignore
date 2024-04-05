@@ -52,7 +52,8 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
-
+embeding_store/
+*.ipynb
 # Translations
 *.mo
 *.pot

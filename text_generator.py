@@ -4,6 +4,7 @@ from langchain_community.chat_models import GigaChat
 from aiogram.types import Message
 from os import getenv
 from dotenv import load_dotenv
+from retriveval import Augmentations
 
 load_dotenv()
 
@@ -16,6 +17,7 @@ class TextGen(object):
             scope=scope,
             profanity=profanity,
         )
+        self.augmentation = Augmentations("documents", "embeding_store")
 
     def answer(self, message: Message) -> None:
         prompt = PromptTemplate(
@@ -33,14 +35,15 @@ class TextGen(object):
                     вопросы, касающиеся РГГМУ. При ответе на вопросы общайся
                     в деловом стиле и пиши только по существу."""
                 ),
-                HumanMessage(content=prompt.format(subject=message)),
+                HumanMessage(content=prompt.format(
+                    subject=self.augmentation.augment_prompt(message)
+                    )),
             ]
         )
 
         return output.content
 
 
-talkbox = TextGen(getenv("CREDENTIAL"), False, getenv("SCOPE"), True)
-# a = talkbox.answer("Привет, что ты умеешь?")
+# talkbox = TextGen("OGM3MzZmZDAtNzliNi00OGQ2LTliMzktZWUwZTk1MDU2NGNjOmExYzgyMmVkLThmNjMtNGU3MC1hZWZlLTc5NDM1NWRiNDkzMA==", False, "GIGACHAT_API_PERS", True)
+# a = talkbox.answer("Как заселиться в общежитие?")
 # print(a)
-# print(type(a))
