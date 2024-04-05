@@ -2,7 +2,6 @@ from langchain.schema import HumanMessage, SystemMessage
 from langchain.prompts import PromptTemplate
 from langchain_community.chat_models import GigaChat
 from aiogram.types import Message
-from os import getenv
 from dotenv import load_dotenv
 from retriveval import Augmentations
 
@@ -35,9 +34,11 @@ class TextGen(object):
                     вопросы, касающиеся РГГМУ. При ответе на вопросы общайся
                     в деловом стиле и пиши только по существу."""
                 ),
-                HumanMessage(content=prompt.format(
-                    subject=self.augmentation.augment_prompt(message)
-                    )),
+                HumanMessage(
+                    content=prompt.format(
+                        subject=self.augmentation.augment_prompt(message)
+                    )
+                ),
             ]
         )
 

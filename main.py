@@ -54,7 +54,9 @@ async def bot_menu():
 @dp.message()
 async def chat_handler(message: Message) -> None:
     try:
-        await message.answer(f'{talkbox.answer(message.text)}\n\n{hbold("Бот работает в тестовом режиме – не все ответы могут быть достоверными")}')
+        await message.answer(
+            f'{talkbox.answer(message.text)}\n\n{hbold("Бот работает в тестовом режиме – не все ответы могут быть достоверными")}'
+        )
     except TypeError:
         await message.answer(
             "Что-то пошло не так! Сообщил разработчку о произошедшей неполадке!"

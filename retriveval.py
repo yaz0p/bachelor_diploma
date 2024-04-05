@@ -7,7 +7,6 @@ from itertools import chain
 
 
 class HuggingFaceE5Embeddings(HuggingFaceEmbeddings):
-
     def embed_query(self, text: str) -> List[float]:
         text = f"query: {text}"
         return super().embed_query(text)
@@ -28,17 +27,18 @@ class HuggingFaceE5Embeddings(HuggingFaceEmbeddings):
 
 
 class Augmentations(object):
-
     def __init__(self, path_to_docs: str, path_to_embedings: str) -> None:
-        '''
+        """
         Make path to documents
-        '''
+        """
         self.path_to_docs = path_to_docs
         self.path_to_embedings = path_to_embedings
 
     def _embedings_storage(self):
         embedding = HuggingFaceE5Embeddings(model_name="intfloat/multilingual-e5-base")
-        docs_list = map(lambda x: self.path_to_docs+"/"+x, listdir(path=self.path_to_docs))
+        docs_list = map(
+            lambda x: self.path_to_docs + "/" + x, listdir(path=self.path_to_docs)
+        )
         loader = map(lambda x: TextLoader(file_path=x), docs_list)
         documents = list(map(lambda x: x.load(), loader))
 
@@ -48,13 +48,10 @@ class Augmentations(object):
             db = FAISS.load_local(
                 folder_path=self.path_to_embedings,
                 embeddings=embedding,
-                allow_dangerous_deserialization=True
+                allow_dangerous_deserialization=True,
             )
         except RuntimeError:
-            db = FAISS.from_documents(
-                documents,
-                embedding
-            )
+            db = FAISS.from_documents(documents, embedding)
             db.save_local(self.path_to_embedings)
         return db
 
