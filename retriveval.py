@@ -39,7 +39,7 @@ class Augmentations(object):
         docs_list = map(
             lambda x: self.path_to_docs + "/" + x, listdir(path=self.path_to_docs)
         )
-        loader = map(lambda x: TextLoader(file_path=x), docs_list)
+        loader = map(lambda x: TextLoader(file_path=x, encoding='utf-8'), docs_list)
         documents = list(map(lambda x: x.load(), loader))
 
         documents = list(chain.from_iterable(documents))

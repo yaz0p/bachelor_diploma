@@ -12,7 +12,7 @@ from text_generator import TextGen
 
 load_dotenv()
 
-talkbox = TextGen(getenv("CREDENTIAL"), False, getenv("SCOPE"), True)
+talkbox = TextGen(getenv("WORK_CREDENTIAL"), False, getenv("WORK_SCOPE"), False)
 TOKEN = getenv("TELEGRAM_TOKEN")
 dp = Dispatcher()
 bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
@@ -33,7 +33,9 @@ async def command_start_handler(message: Message) -> None:
  информацию о внутренних источниках получает благодаря {hbold('RAG')}.\
  Возможно, я прикреплю сюда git репозиторий с реализацией проекта,\
  чтобы студенты могли изучить работу данного ассистента и/или дополнить\
- его своими идеями."
+ его своими идеями.\n\n\
+Пример того, что ты можешь спросить:\n- Адрес какого либо-корпуса\n\
+- Номер приемной комиссии\n- Как поступить в ВУЦ\n- Время приема ректората"
     )
 
 
