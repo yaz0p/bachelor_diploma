@@ -2,13 +2,15 @@ import logging
 import asyncio
 import sys
 from aiogram.enums import ParseMode
-from aiogram import Bot, Dispatcher
-from aiogram.types import Message, BotCommand
+from aiogram import Bot, Dispatcher, F
+from aiogram.types import Message, BotCommand, ContentType
 from aiogram.filters import CommandStart
 from aiogram.utils.markdown import hbold, hlink
 from dotenv import load_dotenv
 from os import getenv
 from text_generator import TextGen
+from speech2text import recognize_speech
+from videohandler import video_handler
 
 load_dotenv()
 
@@ -16,7 +18,7 @@ talkbox = TextGen(getenv("WORK_CREDENTIAL"), False, getenv("WORK_SCOPE"), False)
 TOKEN = getenv("TELEGRAM_TOKEN")
 dp = Dispatcher()
 bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
-
+video_name = 'video.mp4'
 
 # Start message
 @dp.message(CommandStart())
@@ -53,15 +55,45 @@ async def bot_menu():
 
 
 # Main chapter with retrieval
-@dp.message()
+@dp.message(F.text)
 async def chat_handler(message: Message) -> None:
-    try:
+    if 'расписание' in str(message).lower():
+        await message.answer('Расписание можно найти по данной ссылке: https://www.rshu.ru/university/stud/')
+    else:
+        try:
+            await message.answer(
+                f'{talkbox.answer(message.text)}\n\n{hbold("Бот работает в тестовом режиме – не все ответы могут быть достоверными")}'
+            )
+        except TypeError:
+            await message.answer(
+                "Что-то пошло не так! Сообщил разработчку о произошедшей неполадке!"
+            )
+
+
+@dp.message(F.voice)
+async def audio_handler(message: Message) -> None:
+    voice_message = await bot.get_file(message.voice.file_id)
+    voice_message = voice_message.file_path
+    await bot.download_file(voice_message, 'voice.wav')
+    with open('voice.wav', 'rb') as voice_message:
+        text = recognize_speech(voice_message)
+        if 'расписание' in text.lower():
+            await message.answer('Расписание можно найти по данной ссылке: https://www.rshu.ru/university/stud/')
+        else:
+            await message.answer(
+                f'{talkbox.answer(text)}\n\n{hbold("Бот работает в тестовом режиме – не все ответы могут быть достоверными")}'
+            )
+
+@dp.message(F.video_note)
+async def videomessage_handler(message: Message) -> None:
+    voice_message = await bot.get_file(message.video_note.file_id)
+    voice_message = voice_message.file_path
+    await bot.download_file(voice_message, video_name)
+    video_handler(video_name)
+    with open('voice.wav', 'rb') as voice_message:
+        text = recognize_speech(voice_message)
         await message.answer(
-            f'{talkbox.answer(message.text)}\n\n{hbold("Бот работает в тестовом режиме – не все ответы могут быть достоверными")}'
-        )
-    except TypeError:
-        await message.answer(
-            "Что-то пошло не так! Сообщил разработчку о произошедшей неполадке!"
+            f'{talkbox.answer(text)}\n\n{hbold("Бот работает в тестовом режиме – не все ответы могут быть достоверными")}'
         )
 
 
