@@ -3,7 +3,7 @@ import asyncio
 import sys
 from aiogram.enums import ParseMode
 from aiogram import Bot, Dispatcher, F
-from aiogram.types import Message, BotCommand, ContentType
+from aiogram.types import Message, BotCommand
 from aiogram.filters import CommandStart
 from aiogram.utils.markdown import hbold, hlink
 from dotenv import load_dotenv
@@ -14,11 +14,14 @@ from videohandler import video_handler
 
 load_dotenv()
 
+logs = 'messages.log'
 talkbox = TextGen(getenv("WORK_CREDENTIAL"), False, getenv("WORK_SCOPE"), False)
 TOKEN = getenv("TELEGRAM_TOKEN")
 dp = Dispatcher()
 bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
 video_name = 'video.mp4'
+dummy_message = 'Ищу ответ...'
+stub = hbold("Бот работает в тестовом режиме – не все ответы могут быть достоверными")
 
 # Start message
 @dp.message(CommandStart())
@@ -61,14 +64,23 @@ async def chat_handler(message: Message) -> None:
         await message.answer('Расписание можно найти по данной ссылке: https://www.rshu.ru/university/stud/')
     else:
         try:
+            msg = await message.answer(dummy_message)
+            talkbox_msg = talkbox.answer(message.text)
             await message.answer(
-                f'{talkbox.answer(message.text)}\n\n{hbold("Бот работает в тестовом режиме – не все ответы могут быть достоверными")}'
+                f'{talkbox_msg}\n\n{stub}'
             )
+            await msg.delete()
+            with open(logs, 'a') as log:
+                log_msg = f'ID: {message.from_user.id} | Username: {message.from_user.full_name} | Message: {message.text} | Answer: {talkbox_msg}\n\n'
+                log.write(log_msg)
+                print(log_msg)
+
         except TypeError:
             await message.answer(
                 "Что-то пошло не так! Сообщил разработчку о произошедшей неполадке!"
             )
-
+            with open(logs, 'a') as log:
+                log.write(f'ID: {message.from_user.id} | Username: {message.from_user.full_name} | ErrorMessage\n\n')
 
 @dp.message(F.voice)
 async def audio_handler(message: Message) -> None:
@@ -80,9 +92,16 @@ async def audio_handler(message: Message) -> None:
         if 'расписание' in text.lower():
             await message.answer('Расписание можно найти по данной ссылке: https://www.rshu.ru/university/stud/')
         else:
+            msg = await message.answer(dummy_message)
+            talkbox_msg = talkbox.answer(text)
             await message.answer(
-                f'{talkbox.answer(text)}\n\n{hbold("Бот работает в тестовом режиме – не все ответы могут быть достоверными")}'
+                f'{talkbox.answer(text)}\n\n{stub}'
             )
+            await msg.delete()
+            with open(logs, 'a') as log:
+                log_msg = f'ID: {message.from_user.id} | Username: {message.from_user.full_name} | Message: {text} | Answer: {talkbox_msg}\n\n'
+                log.write(log_msg)
+                print(log_msg)
 
 @dp.message(F.video_note)
 async def videomessage_handler(message: Message) -> None:
@@ -92,9 +111,16 @@ async def videomessage_handler(message: Message) -> None:
     video_handler(video_name)
     with open('voice.wav', 'rb') as voice_message:
         text = recognize_speech(voice_message)
+        msg = await message.answer(dummy_message)
+        talkbox_msg = talkbox.answer(text)
         await message.answer(
-            f'{talkbox.answer(text)}\n\n{hbold("Бот работает в тестовом режиме – не все ответы могут быть достоверными")}'
+            f'{talkbox_msg}\n\n{stub}'
         )
+        await msg.delete()
+        with open(logs, 'a') as log:
+            log_msg = f'ID: {message.from_user.id} | Username: {message.from_user.full_name} | Message: {text} | Answer: {talkbox_msg}\n\n'
+            log.write(log_msg)
+            print(log_msg)
 
 
 async def main() -> None:
