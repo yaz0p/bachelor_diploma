@@ -45,8 +45,3 @@ class TextGen(object):
         )
 
         return output.content
-
-
-# talkbox = TextGen("OGM3MzZmZDAtNzliNi00OGQ2LTliMzktZWUwZTk1MDU2NGNjOmExYzgyMmVkLThmNjMtNGU3MC1hZWZlLTc5NDM1NWRiNDkzMA==", False, "GIGACHAT_API_PERS", True)
-# a = talkbox.answer("Где проходит практика у гидрологов?")
-# print(a)

@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN pip install -r req.txt
+RUN pip install -r --no-cashe-dir req.txt
 
 RUN apt-get update && apt-get install -y nano
 RUN apt-get update && apt-get install -y wget bzip2 libxtst6 libgtk-3-0\

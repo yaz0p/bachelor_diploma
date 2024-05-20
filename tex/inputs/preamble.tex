@@ -140,7 +140,7 @@
 
 % иллюстрация
 \newcommand{\fig}[3][1]{
-    \begin{figure}[h]
+    \begin{figure}[H]
         \centering
         \includegraphics[width=#1\textwidth]{#2}
         \caption{#3}\label{#2}
@@ -155,7 +155,7 @@
 % листинг
 \usepackage[newfloat, cache=false]{minted}
 \newcommand{\lst}[2]{
-    \begin{listing}[h]
+    \begin{listing}[H]
         \centering
         \caption{#2}\label{#1}
         \begin{minipage}[t]{.8\textwidth}
@@ -179,7 +179,7 @@
 \newenvironment{codepiece}[2]
 {
     \VerbatimEnvironment
-    \begin{listing}[h]
+    \begin{listing}[H]
         \centering
         \caption{#2}\label{lst:#1}
         \begin{minipage}[t]{.8\textwidth}
@@ -198,7 +198,7 @@
 % таблица
 \newenvironment{tbl}[3]
 {
-    \begin{table}[h]
+    \begin{table}[H]
         \small
         \centering
         \caption{#2}\label{tbl:#1}
@@ -274,6 +274,7 @@
 \usepackage{tikz, pgfplots}
 \pgfplotsset{compat=newest}
 
+\usepackage{csquotes}
 \usepackage{adjustbox}
 \usepackage{float}
 \usepackage{url}
