@@ -21,7 +21,7 @@
 \usepackage{indentfirst}
 \setlength{\parindent}{1.25cm}
 
- скрытый структурный элемент
+% скрытый структурный элемент
 \newcommand{\hidedstructel}[1]{%
     \clearpage
     \section*{#1}%
@@ -42,6 +42,12 @@
 \newcommand{\annex}[1]{%
     \stepcounter{annexcount}%
     \clearpage
+    \setcounter{figure}{0}  % сбросить нумерацию внутри раздела
+    \setcounter{table}{0}%
+    \setcounter{listing}{0}%
+    \renewcommand{\thetable}{\thesection.\arabic{table}}
+    \renewcommand{\thefigure}{\thesection.\arabic{figure}}
+    \renewcommand{\thelisting}{\thesection.\arabic{listing}}
     \section{#1}%
 }
 
