@@ -72,8 +72,8 @@
 \titleformat{\subsection}{\filright\bfseries}{}{}{\thesubsection\hspace{1em}}
 \titlespacing*{\subsection}
     {\parindent}    % отступ слева
-    {}              % сверху
-    {}              % снизу
+    {1.5em}              % сверху
+    {1.5em}              % снизу
 \renewcommand{\thesubsection}{\arabic{subsection}}
 
 % подраздел
@@ -84,7 +84,10 @@
     \renewcommand{\theparagraph}{\thesubsubsection.\arabic{paragraph}}
 }
 \titleformat{\subsubsection}{\filright\bfseries}{}{}{\thesubsubsection\hspace{1em}}
-\titlespacing*{\subsubsection}{\parindent}{}{}
+\titlespacing*{\subsubsection}
+    {\parindent}
+    {1.5em}
+    {1.5em}
 
 % пункт
 \newcommand{\parag}{
